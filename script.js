@@ -302,31 +302,235 @@ function updatePrintButton() {
 }
 
 // ---------- Print Docket ----------
+// Opens a dedicated, self-contained window containing only the dispatch
+// docket and triggers the print dialog on it. This is more reliable across
+// browsers than an in-page @media print approach and also lets the user
+// Save-as-PDF from the same dialog.
 function doPrint() {
     const load = MOCK_LOADS.find(l => l.id === state.selectedLoadId);
-    if (!load) return;
+    if (!load) {
+        alert('No load is selected. Please go back and select a load.');
+        return;
+    }
+    if (!hasSignature) {
+        alert('Please sign in the signature box before printing.');
+        return;
+    }
 
     const now = new Date();
     const docketNo = 'DKT-' + now.getTime().toString().slice(-8);
+    const signedAt = now.toLocaleString('en-AU');
+    let sigDataUrl;
+    try {
+        sigDataUrl = sigPad.toDataURL('image/png');
+    } catch (err) {
+        alert('Could not capture signature: ' + err.message);
+        return;
+    }
 
-    // Fill printable area
-    $('#printDocketNo').textContent = 'Docket #: ' + docketNo;
-    $('#printDriver').innerHTML =
-        '<strong>Driver ID / Licence:</strong> ' + state.driverId;
-    $('#printLoad').innerHTML = `
-        <div><strong>Load ID:</strong> ${load.id}</div>
-        <div><strong>Route:</strong> ${load.route}</div>
-        <div><strong>Product:</strong> ${load.product}</div>
-        <div><strong>Weight:</strong> ${load.weight.toFixed(1)} tonnes</div>
-        <div><strong>Scheduled:</strong> ${load.scheduled}</div>
-        <div><strong>Status:</strong> ${load.status}</div>
-    `;
-    $('#printSigImg').src = sigPad.toDataURL('image/png');
-    $('#printTimestamp').textContent =
-        'Signed at: ' + now.toLocaleString('en-AU');
+    const esc = (s) => String(s).replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
 
-    // Trigger browser print dialog
-    window.print();
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Dispatch Docket ${esc(docketNo)}</title>
+<style>
+    * { box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        color: #1D1D1B;
+        margin: 24px 32px;
+        font-size: 13px;
+    }
+    .print-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 4px solid #00BCE7;
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+    }
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+    .brand-flag {
+        display: inline-grid;
+        grid-template-columns: 14px 14px;
+        grid-gap: 3px;
+    }
+    .brand-flag span {
+        display: block; width: 14px; height: 14px;
+    }
+    .brand-flag .c { background: #00BCE7; }
+    .brand-flag .l { background: #A6E048; }
+    .docket-no {
+        text-align: right;
+    }
+    .docket-no h2 {
+        margin: 0 0 4px 0; font-size: 20px;
+    }
+    .docket-no .muted {
+        color: #6B7280; font-size: 12px;
+    }
+    .print-section { margin-bottom: 18px; }
+    .print-section h4 {
+        margin: 0 0 8px 0;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        color: #4A4A4A;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 4px;
+    }
+    .kv { display: grid; grid-template-columns: 160px 1fr; row-gap: 4px; }
+    .kv .k { color: #6B7280; }
+    .kv .v { font-weight: 600; }
+    .sig-box {
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 8px;
+        max-width: 500px;
+    }
+    .sig-box img {
+        display: block;
+        max-width: 100%;
+        max-height: 140px;
+    }
+    .sig-caption {
+        margin-top: 6px;
+        color: #6B7280;
+        font-size: 11px;
+    }
+    .print-footer {
+        margin-top: 40px;
+        border-top: 1px solid #ccc;
+        padding-top: 8px;
+        font-size: 10px;
+        color: #6B7280;
+        display: flex;
+        justify-content: space-between;
+    }
+    @media print {
+        body { margin: 12mm; }
+        .no-print { display: none !important; }
+    }
+    .toolbar {
+        text-align: right;
+        margin-bottom: 12px;
+    }
+    .toolbar button {
+        background: #00BCE7;
+        color: #1D1D1B;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+    }
+    .toolbar button:hover { background: #009EC4; color: #fff; }
+</style>
+</head>
+<body>
+    <div class="toolbar no-print">
+        <button onclick="window.print()">Print / Save as PDF</button>
+        <button onclick="window.close()" style="background:transparent;border:1px solid #ccc;">Close</button>
+    </div>
+
+    <div class="print-header">
+        <div class="brand">
+            <span>Downer</span>
+            <span class="brand-flag">
+                <span class="c"></span><span class="l"></span>
+                <span class="l"></span><span></span>
+            </span>
+        </div>
+        <div class="docket-no">
+            <h2>Dispatch Docket</h2>
+            <div class="muted">Docket #: ${esc(docketNo)}</div>
+            <div class="muted">Issued: ${esc(signedAt)}</div>
+        </div>
+    </div>
+
+    <div class="print-section">
+        <h4>Driver</h4>
+        <div class="kv">
+            <div class="k">Driver ID / Licence</div><div class="v">${esc(state.driverId)}</div>
+        </div>
+    </div>
+
+    <div class="print-section">
+        <h4>Load Details</h4>
+        <div class="kv">
+            <div class="k">Load ID</div><div class="v">${esc(load.id)}</div>
+            <div class="k">Route</div><div class="v">${esc(load.route)}</div>
+            <div class="k">Product</div><div class="v">${esc(load.product)}</div>
+            <div class="k">Weight</div><div class="v">${load.weight.toFixed(1)} tonnes</div>
+            <div class="k">Scheduled</div><div class="v">${esc(load.scheduled)}</div>
+            <div class="k">Status</div><div class="v">${esc(load.status)}</div>
+        </div>
+    </div>
+
+    <div class="print-section">
+        <h4>Declaration Acknowledged</h4>
+        <div>
+            The driver has acknowledged the declaration and confirmed vehicle
+            inspection, load restraint, fatigue-management compliance, and load
+            accuracy, and accepts responsibility for safe delivery per Downer's
+            HSE policies.
+        </div>
+    </div>
+
+    <div class="print-section">
+        <h4>Driver Signature</h4>
+        <div class="sig-box">
+            <img src="${sigDataUrl}" alt="Driver signature" />
+        </div>
+        <div class="sig-caption">Signed at: ${esc(signedAt)}</div>
+    </div>
+
+    <div class="print-footer">
+        <span>Generated by Downer Driver Self Service Portal</span>
+        <span>${esc(docketNo)}</span>
+    </div>
+
+<script>
+    // Auto-open the print dialog once the signature image has decoded.
+    (function(){
+        var img = document.querySelector('.sig-box img');
+        function go() {
+            try { window.focus(); window.print(); } catch(_) {}
+        }
+        if (img && !img.complete) {
+            img.addEventListener('load', go);
+            img.addEventListener('error', go);
+        } else {
+            setTimeout(go, 150);
+        }
+    })();
+<\/script>
+</body>
+</html>`;
+
+    const w = window.open('', '_blank', 'width=900,height=1000');
+    if (!w) {
+        alert(
+            'The print window was blocked by your browser.\n\n' +
+            'Please allow pop-ups for this site and try again.'
+        );
+        return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
 }
 
 // ============================================================
