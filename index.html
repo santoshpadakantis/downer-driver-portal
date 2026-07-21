@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Downer Australia — Driver Self Service Portal</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <!-- Top Header (shared) -->
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="brand">
+                <!-- Replace src with your official Downer logo file when available -->
+                <img src="logo.svg" alt="Downer Australia" class="brand-logo" onerror="this.style.display='none';document.getElementById('brand-fallback').style.display='inline-flex';" />
+                <span id="brand-fallback" class="brand-fallback" style="display:none;">
+                    <span class="brand-mark">D</span>
+                    <span class="brand-text">Downer</span>
+                </span>
+            </div>
+            <div class="header-title">Driver Self Service Portal</div>
+            <div class="header-right" id="headerRight"></div>
+        </div>
+        <div class="header-accent"></div>
+    </header>
+
+    <main class="app-main">
+
+        <!-- ==================== SCREEN 1: Driver Login ==================== -->
+        <section id="screen-1" class="screen active">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Driver Sign In</h1>
+                    <p class="muted">Enter your Driver&nbsp;ID or Licence Number to view your assigned loads.</p>
+                </div>
+
+                <form id="loginForm" class="form" novalidate>
+                    <label for="driverId" class="form-label">Driver ID / Licence Number</label>
+                    <input
+                        type="text"
+                        id="driverId"
+                        name="driverId"
+                        class="form-input"
+                        placeholder="e.g. DRV-10245 or NSW1234567"
+                        autocomplete="off"
+                        required
+                    />
+                    <small id="loginError" class="form-error" hidden>Please enter a valid Driver ID or Licence Number.</small>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Continue
+                        <span class="btn-arrow">&rarr;</span>
+                    </button>
+                </form>
+
+                <div class="help-row">
+                    <span class="muted">Need help? Contact your dispatch supervisor.</span>
+                </div>
+            </div>
+
+            <footer class="page-footer">
+                &copy; <span id="year"></span> Downer EDI Limited. All rights reserved.
+            </footer>
+        </section>
+
+        <!-- ==================== SCREEN 2: Assigned Loads ==================== -->
+        <section id="screen-2" class="screen">
+            <div class="card card-wide">
+                <div class="card-header row-between">
+                    <div>
+                        <h1>Your Assigned Loads</h1>
+                        <p class="muted">Loads assigned in D365 F&amp;O for driver: <strong id="driverBadge">—</strong></p>
+                    </div>
+                    <button class="btn btn-ghost" id="backToLogin">&larr; Sign out</button>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="loads-table">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Load ID</th>
+                                <th>Route</th>
+                                <th>Product</th>
+                                <th>Weight (t)</th>
+                                <th>Scheduled</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loadsBody">
+                            <!-- rows injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="actions-row">
+                    <div class="muted" id="selectionHint">Select an active load to continue.</div>
+                    <button id="proceedBtn" class="btn btn-primary" disabled>
+                        Acknowledge Selected Load
+                        <span class="btn-arrow">&rarr;</span>
+                    </button>
+                </div>
+            </div>
+
+            <footer class="page-footer">
+                &copy; <span class="year-slot"></span> Downer EDI Limited. All rights reserved.
+            </footer>
+        </section>
+
+        <!-- ==================== SCREEN 3: Acknowledgement + Signature ==================== -->
+        <section id="screen-3" class="screen">
+            <div class="card card-wide">
+                <div class="card-header row-between">
+                    <div>
+                        <h1>Acknowledge &amp; Sign</h1>
+                        <p class="muted">Please review the load details, then sign below to print the dispatch docket.</p>
+                    </div>
+                    <button class="btn btn-ghost" id="backToLoads">&larr; Back to loads</button>
+                </div>
+
+                <div class="ack-grid">
+                    <div class="ack-details" id="ackDetails">
+                        <!-- Populated via JS -->
+                    </div>
+
+                    <div class="ack-agree">
+                        <h3>Driver Declaration</h3>
+                        <ul class="declaration">
+                            <li>I confirm I have inspected the vehicle and load restraints.</li>
+                            <li>I am fit to drive and have complied with fatigue management requirements.</li>
+                            <li>The load matches the dispatch details shown.</li>
+                            <li>I accept responsibility for safe delivery per Downer's HSE policies.</li>
+                        </ul>
+
+                        <label class="check-row">
+                            <input type="checkbox" id="agreeChk" />
+                            <span>I acknowledge and agree to the declaration above.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="signature-block">
+                    <div class="row-between">
+                        <h3>Driver Signature</h3>
+                        <button type="button" class="btn btn-ghost" id="clearSig">Clear signature</button>
+                    </div>
+                    <div class="sig-wrap">
+                        <canvas id="sigPad" width="900" height="220"></canvas>
+                        <div class="sig-line"></div>
+                        <div class="sig-caption">Sign above using mouse, stylus, or touch</div>
+                    </div>
+                </div>
+
+                <div class="actions-row">
+                    <div class="muted">By clicking Print, you confirm the details are correct.</div>
+                    <button id="printBtn" class="btn btn-primary" disabled>
+                        Print Dispatch Docket
+                        <span class="btn-arrow">&#128424;</span>
+                    </button>
+                </div>
+            </div>
+
+            <footer class="page-footer">
+                &copy; <span class="year-slot"></span> Downer EDI Limited. All rights reserved.
+            </footer>
+        </section>
+
+    </main>
+
+    <!-- ==================== Printable Docket (hidden until print) ==================== -->
+    <section id="printArea" aria-hidden="true">
+        <div class="print-header">
+            <div class="print-brand">
+                <span class="brand-mark">D</span>
+                <span class="brand-text">Downer</span>
+            </div>
+            <div>
+                <h2>Dispatch Docket</h2>
+                <div class="muted" id="printDocketNo">Docket #: —</div>
+            </div>
+        </div>
+
+        <div class="print-section">
+            <h4>Driver</h4>
+            <div id="printDriver">—</div>
+        </div>
+
+        <div class="print-section">
+            <h4>Load Details</h4>
+            <div id="printLoad">—</div>
+        </div>
+
+        <div class="print-section">
+            <h4>Declaration Acknowledged</h4>
+            <div>
+                The driver has acknowledged the declaration and confirmed vehicle,
+                load restraint, fatigue compliance, and load accuracy.
+            </div>
+        </div>
+
+        <div class="print-signature">
+            <h4>Driver Signature</h4>
+            <img id="printSigImg" alt="Driver Signature" />
+            <div class="muted" id="printTimestamp">Signed at: —</div>
+        </div>
+
+        <div class="print-footer muted">
+            Generated by Downer Driver Self Service Portal.
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

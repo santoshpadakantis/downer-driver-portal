@@ -1,0 +1,541 @@
+/* ============================================================
+   Downer Australia — Driver Self Service Portal
+   Brand palette (from downergroup.com):
+     Cyan     #00BCE7
+     Lime     #A6E048
+     Ink      #1D1D1B
+     Bg-soft  #F4F6F5
+     Green gradient: #C7EFA1 -> #7FD4B8
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+:root {
+    --downer-cyan:      #00BCE7;
+    --downer-cyan-dk:   #009EC4;
+    --downer-lime:      #A6E048;
+    --downer-lime-dk:   #86BD35;
+    --downer-ink:       #1D1D1B;
+    --downer-gray:      #4A4A4A;
+    --downer-muted:     #6B7280;
+    --downer-bg:        #F4F6F5;
+    --downer-border:    #E4E7E4;
+    --downer-white:     #FFFFFF;
+    --grad-green:       linear-gradient(135deg, #C7EFA1 0%, #7FD4B8 100%);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 14px rgba(0,0,0,0.08);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.10);
+    --radius: 12px;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background: var(--downer-bg);
+    color: var(--downer-ink);
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* -------------------- Header -------------------- */
+.app-header {
+    background: var(--downer-white);
+    border-bottom: 1px solid var(--downer-border);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-logo { height: 42px; width: auto; display: block; }
+.brand-fallback { display: inline-flex; align-items: center; gap: 10px; }
+
+.brand-mark {
+    background: var(--downer-ink);
+    color: #fff;
+    font-weight: 800;
+    font-size: 22px;
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    letter-spacing: -1px;
+}
+
+.brand-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--downer-ink);
+    letter-spacing: -1px;
+}
+
+.header-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--downer-gray);
+    border-left: 2px solid var(--downer-border);
+    padding-left: 24px;
+}
+
+.header-right {
+    margin-left: auto;
+    font-size: 14px;
+    color: var(--downer-muted);
+    font-weight: 500;
+}
+
+/* Cyan + lime accent stripe under the header (echoes the brand flag) */
+.header-accent {
+    height: 4px;
+    background:
+        linear-gradient(90deg,
+            var(--downer-cyan) 0%,
+            var(--downer-cyan) 55%,
+            var(--downer-lime) 55%,
+            var(--downer-lime) 100%);
+}
+
+/* -------------------- Main / Screens -------------------- */
+.app-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+.screen {
+    display: none;
+    animation: fadeIn 0.25s ease;
+}
+.screen.active { display: block; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero-style green gradient panel for Screen 1 (matches the Downer site) */
+#screen-1.active {
+    background: var(--grad-green);
+    border-radius: 16px;
+    padding: 40px 20px 20px 20px;
+    box-shadow: var(--shadow-md);
+}
+
+/* -------------------- Card -------------------- */
+.card {
+    background: var(--downer-white);
+    border: 1px solid var(--downer-border);
+    border-radius: var(--radius);
+    padding: 32px;
+    box-shadow: var(--shadow-lg);
+    max-width: 480px;
+    margin: 20px auto;
+}
+
+.card-wide {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.card-header { margin-bottom: 24px; }
+
+.card-header h1 {
+    margin: 0 0 6px 0;
+    font-size: 26px;
+    color: var(--downer-ink);
+    letter-spacing: -0.4px;
+}
+
+.muted { color: var(--downer-muted); font-size: 14px; }
+
+.row-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* -------------------- Form -------------------- */
+.form { display: flex; flex-direction: column; }
+
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--downer-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+}
+
+.form-input {
+    padding: 12px 14px;
+    border: 1px solid var(--downer-border);
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background: #fff;
+}
+
+.form-input:focus {
+    border-color: var(--downer-cyan);
+    box-shadow: 0 0 0 3px rgba(0, 188, 231, 0.18);
+}
+
+.form-error {
+    display: block;
+    color: #C0392B;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+/* -------------------- Buttons (pill-shaped, Downer-style) -------------------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 22px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.05s, box-shadow 0.15s, color 0.15s;
+    font-family: inherit;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+    background: var(--downer-cyan);
+    color: var(--downer-ink);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--downer-cyan-dk);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(0, 188, 231, 0.30);
+}
+
+.btn-primary:disabled {
+    background: #D1D5DB;
+    color: #6B7280;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-block {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px 22px;
+    font-size: 16px;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--downer-gray);
+    border: 1px solid var(--downer-border);
+    border-radius: 999px;
+}
+
+.btn-ghost:hover {
+    background: #F1F5F3;
+    color: var(--downer-ink);
+    border-color: #CDD3CE;
+}
+
+/* Chevron circle inside the pill button (like Downer's "Learn more") */
+.btn-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--downer-ink);
+    color: #fff;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 1;
+    margin-left: 4px;
+    transition: background 0.15s;
+}
+.btn:hover:not(:disabled) .btn-arrow { background: #000; }
+.btn:disabled .btn-arrow { background: #9CA3AF; }
+
+/* -------------------- Help row / Footer -------------------- */
+.help-row {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.page-footer {
+    text-align: center;
+    color: var(--downer-muted);
+    font-size: 12px;
+    margin-top: 32px;
+    padding-bottom: 12px;
+}
+
+/* -------------------- Loads Table -------------------- */
+.table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--downer-border);
+    border-radius: 10px;
+}
+
+.loads-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.loads-table th,
+.loads-table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--downer-border);
+    font-size: 14px;
+}
+
+.loads-table thead th {
+    background: #F7FAF7;
+    color: var(--downer-gray);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.loads-table tbody tr { transition: background 0.12s; }
+.loads-table tbody tr:hover { background: #F0FBFF; }
+.loads-table tbody tr.selected {
+    background: #E4F8FF;
+    box-shadow: inset 3px 0 0 var(--downer-cyan);
+}
+.loads-table tbody tr.inactive {
+    color: #9CA3AF;
+    background: #FAFAFA;
+}
+.loads-table tbody tr.inactive:hover {
+    background: #FAFAFA;
+    cursor: not-allowed;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.badge-active   { background: #E5F7CE; color: #4E7A19; }
+.badge-pending  { background: #FEF3C7; color: #92400E; }
+.badge-complete { background: #E5E7EB; color: #374151; }
+
+/* Radio accent -> Downer cyan */
+input[type="radio"] { accent-color: var(--downer-cyan); }
+
+/* -------------------- Actions row -------------------- */
+.actions-row {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* -------------------- Acknowledgement grid -------------------- */
+.ack-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+@media (max-width: 800px) {
+    .ack-grid { grid-template-columns: 1fr; }
+}
+
+.ack-details {
+    background: #F7FAF7;
+    border: 1px solid var(--downer-border);
+    border-radius: 10px;
+    padding: 18px;
+}
+
+.ack-details h3,
+.ack-agree h3,
+.signature-block h3 {
+    margin-top: 0;
+    color: var(--downer-ink);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    position: relative;
+    padding-left: 12px;
+}
+
+/* Cyan bar accent before section titles */
+.ack-details h3::before,
+.ack-agree h3::before,
+.signature-block h3::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 3px;
+    width: 4px; height: 16px;
+    background: var(--downer-cyan);
+    border-radius: 2px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--downer-border);
+    font-size: 14px;
+}
+.detail-row:last-child { border-bottom: none; }
+.detail-row .label { color: var(--downer-muted); }
+.detail-row .value {
+    font-weight: 600;
+    color: var(--downer-ink);
+    text-align: right;
+}
+
+.declaration {
+    padding-left: 20px;
+    margin: 0 0 16px 0;
+    color: var(--downer-gray);
+    font-size: 14px;
+}
+.declaration li { margin-bottom: 6px; }
+
+.check-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    background: #F0FBFF;
+    border: 1px solid #B7E9F6;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.check-row input {
+    margin-top: 3px;
+    accent-color: var(--downer-cyan);
+    transform: scale(1.15);
+}
+
+/* -------------------- Signature -------------------- */
+.signature-block { margin-top: 8px; }
+
+.sig-wrap {
+    position: relative;
+    margin-top: 12px;
+    border: 2px dashed #C7CDD5;
+    border-radius: 10px;
+    background: #FFFFFF;
+    padding: 8px;
+}
+
+#sigPad {
+    display: block;
+    width: 100%;
+    height: 220px;
+    background: #fff;
+    border-radius: 6px;
+    touch-action: none;
+    cursor: crosshair;
+}
+
+.sig-line {
+    position: absolute;
+    left: 24px; right: 24px;
+    bottom: 40px;
+    border-bottom: 1px solid #D1D5DB;
+    pointer-events: none;
+}
+
+.sig-caption {
+    text-align: center;
+    color: var(--downer-muted);
+    font-size: 12px;
+    padding: 6px 0 2px 0;
+}
+
+/* -------------------- Print Area -------------------- */
+#printArea { display: none; }
+
+/* ==========================================================
+   PRINT STYLES — only the docket prints
+   ========================================================== */
+@media print {
+    body * { visibility: hidden; }
+    #printArea, #printArea * { visibility: visible; }
+    #printArea {
+        display: block;
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        padding: 24px 32px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        color: #000;
+    }
+    .print-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 4px solid var(--downer-cyan);
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+    }
+    .print-brand { display: inline-flex; align-items: center; gap: 12px; }
+    .print-brand .brand-mark {
+        background: var(--downer-ink);
+        color: #fff;
+        width: 48px; height: 48px;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 24px; border-radius: 6px;
+    }
+    .print-brand .brand-text { font-size: 26px; font-weight: 700; }
+    .print-section { margin-bottom: 18px; }
+    .print-section h4 {
+        margin: 0 0 6px 0;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        color: #555;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 4px;
+    }
+    .print-signature img {
+        max-height: 120px;
+        border-bottom: 1px solid #333;
+        padding: 4px 0;
+    }
+    .print-footer {
+        margin-top: 32px;
+        border-top: 1px solid #ccc;
+        padding-top: 8px;
+        font-size: 11px;
+    }
+}
