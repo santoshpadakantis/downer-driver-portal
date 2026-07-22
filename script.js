@@ -427,6 +427,9 @@ function doPrint() {
         '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
     }[c]));
 
+    // Absolute URL for the logo so the popup window (with no base URL) can find it.
+    const logoUrl = new URL('downer-logo.png', location.href).href;
+
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -455,6 +458,11 @@ function doPrint() {
         font-size: 26px;
         font-weight: 700;
         letter-spacing: -0.5px;
+    }
+    .brand-logo-print {
+        height: 54px;
+        width: auto;
+        display: block;
     }
     .brand-flag {
         display: inline-grid;
@@ -570,10 +578,14 @@ function doPrint() {
 <body>
     <div class="toolbar no-print">
         <button onclick="window.print()">Print / Save as PDF</button>
-        <button onclick="window.close()" style="background:transparent;border:1px solid #ccc;">Close</button>
-    </div>
-
-    <div class="print-header">
+        <buttimg src="${esc(logoUrl)}" alt="Downer" class="brand-logo-print"
+                 onerror="this.style.display='none';document.getElementById('brandFallback').style.display='inline-flex';" />
+            <span id="brandFallback" style="display:none;align-items:center;gap:12px;">
+                <span>Downer</span>
+                <span class="brand-flag">
+                    <span class="c"></span><span class="l"></span>
+                    <span class="l"></span><span></span>
+                
         <div class="brand">
             <span>Downer</span>
             <span class="brand-flag">
