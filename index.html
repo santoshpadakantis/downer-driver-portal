@@ -31,21 +31,21 @@
             <div class="card">
                 <div class="card-header">
                     <h1>Driver Sign In</h1>
-                    <p class="muted">Enter your Driver&nbsp;ID or Licence Number to view your assigned loads.</p>
+                    <p class="muted">Enter your Driver&nbsp;ID (e.g. <strong>DR-01</strong>) to view your assigned loads.</p>
                 </div>
 
                 <form id="loginForm" class="form" novalidate>
-                    <label for="driverId" class="form-label">Driver ID / Licence Number</label>
+                    <label for="driverId" class="form-label">Driver ID</label>
                     <input
                         type="text"
                         id="driverId"
                         name="driverId"
                         class="form-input"
-                        placeholder="e.g. DRV-10245 or NSW1234567"
+                        placeholder="e.g. DR-01"
                         autocomplete="off"
                         required
                     />
-                    <small id="loginError" class="form-error" hidden>Please enter a valid Driver ID or Licence Number.</small>
+                    <small id="loginError" class="form-error" hidden>Please enter a valid Driver ID.</small>
 
                     <button type="submit" class="btn btn-primary btn-block">
                         Continue
@@ -54,7 +54,7 @@
                 </form>
 
                 <div class="help-row">
-                    <span class="muted">Need help? Contact your dispatch supervisor.</span>
+                    <span class="muted">Valid demo IDs: DR-01 to DR-10. Need help? Contact your dispatch supervisor.</span>
                 </div>
             </div>
 

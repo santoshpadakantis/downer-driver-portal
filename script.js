@@ -3,45 +3,95 @@
    Client-side logic for 3-screen workflow
    ============================================================ */
 
-// ---------- Mock data (would come from D365 F&O API) ----------
-const MOCK_LOADS = [
-    {
-        id: 'LD-100234',
-        route: 'Sydney DC → Newcastle Yard',
-        product: 'Ballast Aggregate 20mm',
-        weight: 28.5,
-        scheduled: '2026-07-21 08:30',
-        status: 'Active'
-    },
-    {
-        id: 'LD-100235',
-        route: 'Sydney DC → Wollongong Site B',
-        product: 'Rail Sleepers (Concrete)',
-        weight: 24.0,
-        scheduled: '2026-07-21 11:15',
-        status: 'Active'
-    },
-    {
-        id: 'LD-100236',
-        route: 'Port Botany → Chullora Yard',
-        product: 'Signal Equipment Crates',
-        weight: 12.3,
-        scheduled: '2026-07-21 14:00',
-        status: 'Pending'
-    },
-    {
-        id: 'LD-100201',
-        route: 'Newcastle Yard → Maitland Depot',
-        product: 'Track Ballast',
-        weight: 30.0,
-        scheduled: '2026-07-20 09:00',
-        status: 'Completed'
-    }
-];
+// ---------- Reference data (would come from D365 F&O in production) ----------
+
+// The three approved product codes
+const PROD = {
+    PMB:  'PMB A15R wet blend CR15%',
+    AC20: 'AC20M 30% RAP C450',
+    AC10: 'AC10M R117 25% RAP C450'
+};
+
+// Driver directory: Driver ID -> full name
+const DRIVERS = {
+    'DR-01': 'Jack Thompson',
+    'DR-02': 'Priya Nair',
+    'DR-03': "Liam O'Brien",
+    'DR-04': 'Mei Nguyen',
+    'DR-05': 'Ethan Williams',
+    'DR-06': 'Noah Papadopoulos',
+    'DR-07': 'Ava Wiradjuri',
+    'DR-08': 'Rajesh Kumar',
+    'DR-09': 'Sofia Costa',
+    'DR-10': 'Marcus Chen'
+};
+
+// Per-driver load allocation. Each driver gets a unique set of USMF loads.
+const LOADS_BY_DRIVER = {
+    'DR-01': [
+        { id: 'USMF-1001', route: 'Sydney DC → Parramatta Site',      product: PROD.PMB,  weight: 28.5, scheduled: '2026-07-22 08:00', status: 'Active' },
+        { id: 'USMF-1002', route: 'Sydney DC → Wollongong Site B',    product: PROD.AC20, weight: 24.0, scheduled: '2026-07-22 11:15', status: 'Active' },
+        { id: 'USMF-1003', route: 'Sydney DC → Newcastle Yard',       product: PROD.AC10, weight: 26.0, scheduled: '2026-07-21 14:00', status: 'Completed' }
+    ],
+    'DR-02': [
+        { id: 'USMF-1010', route: 'Melbourne DC → Geelong Yard',      product: PROD.AC20, weight: 27.0, scheduled: '2026-07-22 07:30', status: 'Active' },
+        { id: 'USMF-1011', route: 'Melbourne DC → Ballarat Depot',    product: PROD.PMB,  weight: 22.5, scheduled: '2026-07-22 13:00', status: 'Pending' },
+        { id: 'USMF-1012', route: 'Geelong Yard → Werribee Site',     product: PROD.AC10, weight: 25.0, scheduled: '2026-07-21 09:15', status: 'Completed' }
+    ],
+    'DR-03': [
+        { id: 'USMF-1020', route: 'Brisbane North → Toowoomba Depot', product: PROD.PMB,  weight: 29.0, scheduled: '2026-07-22 06:45', status: 'Active' },
+        { id: 'USMF-1021', route: 'Brisbane North → Ipswich Yard',    product: PROD.AC10, weight: 24.5, scheduled: '2026-07-22 12:00', status: 'Active' },
+        { id: 'USMF-1022', route: 'Toowoomba → Warwick Site',         product: PROD.AC20, weight: 23.0, scheduled: '2026-07-23 08:00', status: 'Pending' }
+    ],
+    'DR-04': [
+        { id: 'USMF-1030', route: 'Perth DC → Fremantle Yard',        product: PROD.AC20, weight: 28.0, scheduled: '2026-07-22 09:00', status: 'Active' },
+        { id: 'USMF-1031', route: 'Perth DC → Rockingham Site',       product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-22 15:30', status: 'Pending' },
+        { id: 'USMF-1032', route: 'Fremantle → Kwinana Yard',          product: PROD.AC10, weight: 26.5, scheduled: '2026-07-21 11:00', status: 'Completed' }
+    ],
+    'DR-05': [
+        { id: 'USMF-1040', route: 'Adelaide DC → Mount Barker Site',  product: PROD.AC10, weight: 27.5, scheduled: '2026-07-22 08:15', status: 'Active' },
+        { id: 'USMF-1041', route: 'Adelaide DC → Port Adelaide Yard', product: PROD.PMB,  weight: 24.0, scheduled: '2026-07-22 13:45', status: 'Active' },
+        { id: 'USMF-1042', route: 'Mount Barker → Murray Bridge',     product: PROD.AC20, weight: 23.5, scheduled: '2026-07-23 07:30', status: 'Pending' }
+    ],
+    'DR-06': [
+        { id: 'USMF-1050', route: 'Sydney DC → Bankstown Site',       product: PROD.PMB,  weight: 26.0, scheduled: '2026-07-22 06:00', status: 'Active' },
+        { id: 'USMF-1051', route: 'Port Botany → Chullora Yard',      product: PROD.AC20, weight: 29.5, scheduled: '2026-07-22 10:30', status: 'Active' },
+        { id: 'USMF-1052', route: 'Sydney DC → Liverpool Depot',      product: PROD.AC10, weight: 25.0, scheduled: '2026-07-20 15:00', status: 'Completed' }
+    ],
+    'DR-07': [
+        { id: 'USMF-1060', route: 'Newcastle → Maitland Depot',       product: PROD.AC10, weight: 28.5, scheduled: '2026-07-22 07:00', status: 'Active' },
+        { id: 'USMF-1061', route: 'Newcastle → Charlestown Site',     product: PROD.PMB,  weight: 22.0, scheduled: '2026-07-22 12:15', status: 'Pending' },
+        { id: 'USMF-1062', route: 'Newcastle → Cardiff Yard',         product: PROD.AC20, weight: 24.5, scheduled: '2026-07-21 08:45', status: 'Completed' }
+    ],
+    'DR-08': [
+        { id: 'USMF-1070', route: 'Melbourne DC → Dandenong Yard',    product: PROD.AC20, weight: 30.0, scheduled: '2026-07-22 05:45', status: 'Active' },
+        { id: 'USMF-1071', route: 'Melbourne DC → Frankston Site',    product: PROD.AC10, weight: 26.0, scheduled: '2026-07-22 11:00', status: 'Active' },
+        { id: 'USMF-1072', route: 'Melbourne DC → Sunbury Depot',     product: PROD.PMB,  weight: 23.5, scheduled: '2026-07-23 09:15', status: 'Pending' }
+    ],
+    'DR-09': [
+        { id: 'USMF-1080', route: 'Brisbane North → Gold Coast Yard', product: PROD.PMB,  weight: 27.0, scheduled: '2026-07-22 07:30', status: 'Active' },
+        { id: 'USMF-1081', route: 'Brisbane North → Redcliffe Site',  product: PROD.AC10, weight: 24.0, scheduled: '2026-07-22 14:00', status: 'Pending' },
+        { id: 'USMF-1082', route: 'Gold Coast → Nerang Depot',        product: PROD.AC20, weight: 25.5, scheduled: '2026-07-20 10:30', status: 'Completed' }
+    ],
+    'DR-10': [
+        { id: 'USMF-1090', route: 'Sydney DC → Ryde Site',            product: PROD.AC20, weight: 28.0, scheduled: '2026-07-22 06:30', status: 'Active' },
+        { id: 'USMF-1091', route: 'Sydney DC → Hornsby Depot',        product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-22 12:45', status: 'Active' },
+        { id: 'USMF-1092', route: 'Sydney DC → Manly Site',           product: PROD.AC10, weight: 22.5, scheduled: '2026-07-23 08:30', status: 'Pending' }
+    ]
+};
+
+function getLoadsForDriver(driverId) {
+    return LOADS_BY_DRIVER[driverId] || [];
+}
+
+function findLoad(driverId, loadId) {
+    return getLoadsForDriver(driverId).find(l => l.id === loadId);
+}
 
 // ---------- State ----------
 const state = {
     driverId: '',
+    driverName: '',
     selectedLoadId: null
 };
 
@@ -72,20 +122,36 @@ function initLogin() {
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const val = input.value.trim();
-        // Simple non-empty + min length validation.
-        // Alphanumeric, hyphens allowed. Adjust to your real ID format.
-        if (!/^[A-Za-z0-9\-]{4,}$/.test(val)) {
+        const raw = input.value.trim().toUpperCase();
+
+        // Accept both 'DR-01' and 'DR01' by inserting the missing hyphen.
+        const normalised = /^DR\d+$/.test(raw)
+            ? raw.replace(/^DR/, 'DR-')
+            : raw;
+
+        if (!/^[A-Z0-9\-]{4,}$/.test(normalised)) {
+            err.textContent = 'Please enter a valid Driver ID (e.g. DR-01).';
             err.hidden = false;
             input.focus();
             return;
         }
-        err.hidden = true;
-        state.driverId = val.toUpperCase();
 
-        // Update header + badge
-        $('#headerRight').textContent = 'Driver: ' + state.driverId;
-        $('#driverBadge').textContent = state.driverId;
+        const name = DRIVERS[normalised];
+        if (!name) {
+            err.textContent = 'Driver ID not recognised. Valid IDs are DR-01 to DR-10.';
+            err.hidden = false;
+            input.focus();
+            input.select();
+            return;
+        }
+
+        err.hidden = true;
+        state.driverId   = normalised;
+        state.driverName = name;
+
+        // Update header + badge (name + ID)
+        $('#headerRight').textContent = state.driverName + ' (' + state.driverId + ')';
+        $('#driverBadge').textContent = state.driverName + ' (' + state.driverId + ')';
 
         renderLoads();
         goToScreen(2);
@@ -99,41 +165,49 @@ function renderLoads() {
     const body = $('#loadsBody');
     body.innerHTML = '';
 
-    MOCK_LOADS.forEach(load => {
+    const loads = getLoadsForDriver(state.driverId);
+
+    if (loads.length === 0) {
         const tr = document.createElement('tr');
-        const isSelectable = (load.status === 'Active');
-        if (!isSelectable) tr.classList.add('inactive');
-        tr.dataset.loadId = load.id;
-
-        const badgeClass =
-            load.status === 'Active'    ? 'badge-active' :
-            load.status === 'Pending'   ? 'badge-pending' :
-                                          'badge-complete';
-
-        tr.innerHTML = `
-            <td>
-                <input type="radio" name="loadPick"
-                       value="${load.id}"
-                       ${isSelectable ? '' : 'disabled'}
-                       aria-label="Select load ${load.id}" />
-            </td>
-            <td><strong>${load.id}</strong></td>
-            <td>${load.route}</td>
-            <td>${load.product}</td>
-            <td>${load.weight.toFixed(1)}</td>
-            <td>${load.scheduled}</td>
-            <td><span class="badge ${badgeClass}">${load.status}</span></td>
-        `;
-
-        if (isSelectable) {
-            tr.addEventListener('click', () => {
-                const radio = tr.querySelector('input[type=radio]');
-                radio.checked = true;
-                onLoadSelected(load.id);
-            });
-        }
+        tr.innerHTML = '<td colspan="7" style="text-align:center;padding:24px;color:#6B7280;">No loads assigned to this driver.</td>';
         body.appendChild(tr);
-    });
+    } else {
+        loads.forEach(load => {
+            const tr = document.createElement('tr');
+            const isSelectable = (load.status === 'Active');
+            if (!isSelectable) tr.classList.add('inactive');
+            tr.dataset.loadId = load.id;
+
+            const badgeClass =
+                load.status === 'Active'    ? 'badge-active' :
+                load.status === 'Pending'   ? 'badge-pending' :
+                                              'badge-complete';
+
+            tr.innerHTML = `
+                <td>
+                    <input type="radio" name="loadPick"
+                           value="${load.id}"
+                           ${isSelectable ? '' : 'disabled'}
+                           aria-label="Select load ${load.id}" />
+                </td>
+                <td><strong>${load.id}</strong></td>
+                <td>${load.route}</td>
+                <td>${load.product}</td>
+                <td>${load.weight.toFixed(1)}</td>
+                <td>${load.scheduled}</td>
+                <td><span class="badge ${badgeClass}">${load.status}</span></td>
+            `;
+
+            if (isSelectable) {
+                tr.addEventListener('click', () => {
+                    const radio = tr.querySelector('input[type=radio]');
+                    radio.checked = true;
+                    onLoadSelected(load.id);
+                });
+            }
+            body.appendChild(tr);
+        });
+    }
 
     // Reset selection state
     state.selectedLoadId = null;
@@ -154,6 +228,7 @@ function onLoadSelected(loadId) {
 function initLoadsScreen() {
     $('#backToLogin').addEventListener('click', () => {
         state.driverId = '';
+        state.driverName = '';
         state.selectedLoadId = null;
         $('#driverId').value = '';
         $('#headerRight').textContent = '';
@@ -178,7 +253,7 @@ function initLoadsScreen() {
 // SCREEN 3 — Acknowledgement + Signature + Print
 // ============================================================
 function renderAckDetails() {
-    const load = MOCK_LOADS.find(l => l.id === state.selectedLoadId);
+    const load = findLoad(state.driverId, state.selectedLoadId);
     if (!load) return;
 
     const html = `
@@ -188,7 +263,7 @@ function renderAckDetails() {
         <div class="detail-row"><span class="label">Product</span><span class="value">${load.product}</span></div>
         <div class="detail-row"><span class="label">Weight</span><span class="value">${load.weight.toFixed(1)} tonnes</span></div>
         <div class="detail-row"><span class="label">Scheduled</span><span class="value">${load.scheduled}</span></div>
-        <div class="detail-row"><span class="label">Assigned To</span><span class="value">${state.driverId}</span></div>
+        <div class="detail-row"><span class="label">Assigned To</span><span class="value">${state.driverName} (${state.driverId})</span></div>
         <div class="detail-row"><span class="label">Status</span><span class="value">${load.status}</span></div>
     `;
     $('#ackDetails').innerHTML = html;
@@ -307,7 +382,7 @@ function updatePrintButton() {
 // browsers than an in-page @media print approach and also lets the user
 // Save-as-PDF from the same dialog.
 function doPrint() {
-    const load = MOCK_LOADS.find(l => l.id === state.selectedLoadId);
+    const load = findLoad(state.driverId, state.selectedLoadId);
     if (!load) {
         alert('No load is selected. Please go back and select a load.');
         return;
@@ -463,7 +538,8 @@ function doPrint() {
     <div class="print-section">
         <h4>Driver</h4>
         <div class="kv">
-            <div class="k">Driver ID / Licence</div><div class="v">${esc(state.driverId)}</div>
+            <div class="k">Driver Name</div><div class="v">${esc(state.driverName)}</div>
+            <div class="k">Driver ID</div><div class="v">${esc(state.driverId)}</div>
         </div>
     </div>
 
