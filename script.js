@@ -12,6 +12,22 @@ const PROD = {
     AC10: 'AC10M R117 25% RAP C450'
 };
 
+// Customer directory: short-key -> { name, address }
+const CUSTOMERS = {
+    METRO: {
+        name: 'Metro Civil Pty Ltd',
+        address: '45 Parramatta Road, Homebush West NSW 2140, Australia'
+    },
+    QUICKSEAL: {
+        name: 'QuickSeal Spray',
+        address: '12 Industrial Drive, Dandenong South VIC 3175, Australia'
+    },
+    REGIONAL: {
+        name: 'Regional Roads Co',
+        address: 'Unit 3, 88 Boundary Road, Yatala QLD 4207, Australia'
+    }
+};
+
 // Driver directory: Driver ID -> full name
 const DRIVERS = {
     'DR-01': 'Jack Thompson',
@@ -27,56 +43,57 @@ const DRIVERS = {
 };
 
 // Per-driver load allocation. Each driver gets a unique set of USMF loads.
+// Each load carries: product, customer, and a Customer Order (CO-#####) number.
 const LOADS_BY_DRIVER = {
     'DR-01': [
-        { id: 'USMF-1001', route: 'Sydney DC → Parramatta Site',      product: PROD.PMB,  weight: 28.5, scheduled: '2026-07-22 08:00', status: 'Active' },
-        { id: 'USMF-1002', route: 'Sydney DC → Wollongong Site B',    product: PROD.AC20, weight: 24.0, scheduled: '2026-07-22 11:15', status: 'Active' },
-        { id: 'USMF-1003', route: 'Sydney DC → Newcastle Yard',       product: PROD.AC10, weight: 26.0, scheduled: '2026-07-21 14:00', status: 'Completed' }
+        { id: 'USMF-1001', route: 'Sydney DC → Parramatta Site',      product: PROD.PMB,  weight: 28.5, scheduled: '2026-07-22 08:00', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88274' },
+        { id: 'USMF-1002', route: 'Sydney DC → Wollongong Site B',    product: PROD.AC20, weight: 24.0, scheduled: '2026-07-22 11:15', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88291' },
+        { id: 'USMF-1003', route: 'Sydney DC → Newcastle Yard',       product: PROD.AC10, weight: 26.0, scheduled: '2026-07-21 14:00', status: 'Completed', customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-88175' }
     ],
     'DR-02': [
-        { id: 'USMF-1010', route: 'Melbourne DC → Geelong Yard',      product: PROD.AC20, weight: 27.0, scheduled: '2026-07-22 07:30', status: 'Active' },
-        { id: 'USMF-1011', route: 'Melbourne DC → Ballarat Depot',    product: PROD.PMB,  weight: 22.5, scheduled: '2026-07-22 13:00', status: 'Pending' },
-        { id: 'USMF-1012', route: 'Geelong Yard → Werribee Site',     product: PROD.AC10, weight: 25.0, scheduled: '2026-07-21 09:15', status: 'Completed' }
+        { id: 'USMF-1010', route: 'Melbourne DC → Geelong Yard',      product: PROD.AC20, weight: 27.0, scheduled: '2026-07-22 07:30', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90112' },
+        { id: 'USMF-1011', route: 'Melbourne DC → Ballarat Depot',    product: PROD.PMB,  weight: 22.5, scheduled: '2026-07-22 13:00', status: 'Pending',   customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90118' },
+        { id: 'USMF-1012', route: 'Geelong Yard → Werribee Site',     product: PROD.AC10, weight: 25.0, scheduled: '2026-07-21 09:15', status: 'Completed', customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90007' }
     ],
     'DR-03': [
-        { id: 'USMF-1020', route: 'Brisbane North → Toowoomba Depot', product: PROD.PMB,  weight: 29.0, scheduled: '2026-07-22 06:45', status: 'Active' },
-        { id: 'USMF-1021', route: 'Brisbane North → Ipswich Yard',    product: PROD.AC10, weight: 24.5, scheduled: '2026-07-22 12:00', status: 'Active' },
-        { id: 'USMF-1022', route: 'Toowoomba → Warwick Site',         product: PROD.AC20, weight: 23.0, scheduled: '2026-07-23 08:00', status: 'Pending' }
+        { id: 'USMF-1020', route: 'Brisbane North → Toowoomba Depot', product: PROD.PMB,  weight: 29.0, scheduled: '2026-07-22 06:45', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77455' },
+        { id: 'USMF-1021', route: 'Brisbane North → Ipswich Yard',    product: PROD.AC10, weight: 24.5, scheduled: '2026-07-22 12:00', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77462' },
+        { id: 'USMF-1022', route: 'Toowoomba → Warwick Site',         product: PROD.AC20, weight: 23.0, scheduled: '2026-07-23 08:00', status: 'Pending',   customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77501' }
     ],
     'DR-04': [
-        { id: 'USMF-1030', route: 'Perth DC → Fremantle Yard',        product: PROD.AC20, weight: 28.0, scheduled: '2026-07-22 09:00', status: 'Active' },
-        { id: 'USMF-1031', route: 'Perth DC → Rockingham Site',       product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-22 15:30', status: 'Pending' },
-        { id: 'USMF-1032', route: 'Fremantle → Kwinana Yard',          product: PROD.AC10, weight: 26.5, scheduled: '2026-07-21 11:00', status: 'Completed' }
+        { id: 'USMF-1030', route: 'Perth DC → Fremantle Yard',        product: PROD.AC20, weight: 28.0, scheduled: '2026-07-22 09:00', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-65128' },
+        { id: 'USMF-1031', route: 'Perth DC → Rockingham Site',       product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-22 15:30', status: 'Pending',   customer: CUSTOMERS.METRO,     customerOrder: 'CO-65134' },
+        { id: 'USMF-1032', route: 'Fremantle → Kwinana Yard',         product: PROD.AC10, weight: 26.5, scheduled: '2026-07-21 11:00', status: 'Completed', customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-65099' }
     ],
     'DR-05': [
-        { id: 'USMF-1040', route: 'Adelaide DC → Mount Barker Site',  product: PROD.AC10, weight: 27.5, scheduled: '2026-07-22 08:15', status: 'Active' },
-        { id: 'USMF-1041', route: 'Adelaide DC → Port Adelaide Yard', product: PROD.PMB,  weight: 24.0, scheduled: '2026-07-22 13:45', status: 'Active' },
-        { id: 'USMF-1042', route: 'Mount Barker → Murray Bridge',     product: PROD.AC20, weight: 23.5, scheduled: '2026-07-23 07:30', status: 'Pending' }
+        { id: 'USMF-1040', route: 'Adelaide DC → Mount Barker Site',  product: PROD.AC10, weight: 27.5, scheduled: '2026-07-22 08:15', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-71304' },
+        { id: 'USMF-1041', route: 'Adelaide DC → Port Adelaide Yard', product: PROD.PMB,  weight: 24.0, scheduled: '2026-07-22 13:45', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-71310' },
+        { id: 'USMF-1042', route: 'Mount Barker → Murray Bridge',     product: PROD.AC20, weight: 23.5, scheduled: '2026-07-23 07:30', status: 'Pending',   customer: CUSTOMERS.METRO,     customerOrder: 'CO-71322' }
     ],
     'DR-06': [
-        { id: 'USMF-1050', route: 'Sydney DC → Bankstown Site',       product: PROD.PMB,  weight: 26.0, scheduled: '2026-07-22 06:00', status: 'Active' },
-        { id: 'USMF-1051', route: 'Port Botany → Chullora Yard',      product: PROD.AC20, weight: 29.5, scheduled: '2026-07-22 10:30', status: 'Active' },
-        { id: 'USMF-1052', route: 'Sydney DC → Liverpool Depot',      product: PROD.AC10, weight: 25.0, scheduled: '2026-07-20 15:00', status: 'Completed' }
+        { id: 'USMF-1050', route: 'Sydney DC → Bankstown Site',       product: PROD.PMB,  weight: 26.0, scheduled: '2026-07-22 06:00', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88301' },
+        { id: 'USMF-1051', route: 'Port Botany → Chullora Yard',      product: PROD.AC20, weight: 29.5, scheduled: '2026-07-22 10:30', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88318' },
+        { id: 'USMF-1052', route: 'Sydney DC → Liverpool Depot',      product: PROD.AC10, weight: 25.0, scheduled: '2026-07-20 15:00', status: 'Completed', customer: CUSTOMERS.METRO,     customerOrder: 'CO-88266' }
     ],
     'DR-07': [
-        { id: 'USMF-1060', route: 'Newcastle → Maitland Depot',       product: PROD.AC10, weight: 28.5, scheduled: '2026-07-22 07:00', status: 'Active' },
-        { id: 'USMF-1061', route: 'Newcastle → Charlestown Site',     product: PROD.PMB,  weight: 22.0, scheduled: '2026-07-22 12:15', status: 'Pending' },
-        { id: 'USMF-1062', route: 'Newcastle → Cardiff Yard',         product: PROD.AC20, weight: 24.5, scheduled: '2026-07-21 08:45', status: 'Completed' }
+        { id: 'USMF-1060', route: 'Newcastle → Maitland Depot',       product: PROD.AC10, weight: 28.5, scheduled: '2026-07-22 07:00', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88208' },
+        { id: 'USMF-1061', route: 'Newcastle → Charlestown Site',     product: PROD.PMB,  weight: 22.0, scheduled: '2026-07-22 12:15', status: 'Pending',   customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-88214' },
+        { id: 'USMF-1062', route: 'Newcastle → Cardiff Yard',         product: PROD.AC20, weight: 24.5, scheduled: '2026-07-21 08:45', status: 'Completed', customer: CUSTOMERS.METRO,     customerOrder: 'CO-88155' }
     ],
     'DR-08': [
-        { id: 'USMF-1070', route: 'Melbourne DC → Dandenong Yard',    product: PROD.AC20, weight: 30.0, scheduled: '2026-07-22 05:45', status: 'Active' },
-        { id: 'USMF-1071', route: 'Melbourne DC → Frankston Site',    product: PROD.AC10, weight: 26.0, scheduled: '2026-07-22 11:00', status: 'Active' },
-        { id: 'USMF-1072', route: 'Melbourne DC → Sunbury Depot',     product: PROD.PMB,  weight: 23.5, scheduled: '2026-07-23 09:15', status: 'Pending' }
+        { id: 'USMF-1070', route: 'Melbourne DC → Dandenong Yard',    product: PROD.AC20, weight: 30.0, scheduled: '2026-07-22 05:45', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90201' },
+        { id: 'USMF-1071', route: 'Melbourne DC → Frankston Site',    product: PROD.AC10, weight: 26.0, scheduled: '2026-07-22 11:00', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90214' },
+        { id: 'USMF-1072', route: 'Melbourne DC → Sunbury Depot',     product: PROD.PMB,  weight: 23.5, scheduled: '2026-07-23 09:15', status: 'Pending',   customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90223' }
     ],
     'DR-09': [
-        { id: 'USMF-1080', route: 'Brisbane North → Gold Coast Yard', product: PROD.PMB,  weight: 27.0, scheduled: '2026-07-22 07:30', status: 'Active' },
-        { id: 'USMF-1081', route: 'Brisbane North → Redcliffe Site',  product: PROD.AC10, weight: 24.0, scheduled: '2026-07-22 14:00', status: 'Pending' },
-        { id: 'USMF-1082', route: 'Gold Coast → Nerang Depot',        product: PROD.AC20, weight: 25.5, scheduled: '2026-07-20 10:30', status: 'Completed' }
+        { id: 'USMF-1080', route: 'Brisbane North → Gold Coast Yard', product: PROD.PMB,  weight: 27.0, scheduled: '2026-07-22 07:30', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77522' },
+        { id: 'USMF-1081', route: 'Brisbane North → Redcliffe Site',  product: PROD.AC10, weight: 24.0, scheduled: '2026-07-22 14:00', status: 'Pending',   customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77530' },
+        { id: 'USMF-1082', route: 'Gold Coast → Nerang Depot',        product: PROD.AC20, weight: 25.5, scheduled: '2026-07-20 10:30', status: 'Completed', customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77488' }
     ],
     'DR-10': [
-        { id: 'USMF-1090', route: 'Sydney DC → Ryde Site',            product: PROD.AC20, weight: 28.0, scheduled: '2026-07-22 06:30', status: 'Active' },
-        { id: 'USMF-1091', route: 'Sydney DC → Hornsby Depot',        product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-22 12:45', status: 'Active' },
-        { id: 'USMF-1092', route: 'Sydney DC → Manly Site',           product: PROD.AC10, weight: 22.5, scheduled: '2026-07-23 08:30', status: 'Pending' }
+        { id: 'USMF-1090', route: 'Sydney DC → Ryde Site',            product: PROD.AC20, weight: 28.0, scheduled: '2026-07-22 06:30', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88355' },
+        { id: 'USMF-1091', route: 'Sydney DC → Hornsby Depot',        product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-22 12:45', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-88367' },
+        { id: 'USMF-1092', route: 'Sydney DC → Manly Site',           product: PROD.AC10, weight: 22.5, scheduled: '2026-07-23 08:30', status: 'Pending',   customer: CUSTOMERS.METRO,     customerOrder: 'CO-88401' }
     ]
 };
 
@@ -259,6 +276,9 @@ function renderAckDetails() {
     const html = `
         <h3>Load Details</h3>
         <div class="detail-row"><span class="label">Load ID</span><span class="value">${load.id}</span></div>
+        <div class="detail-row"><span class="label">Customer Order</span><span class="value">${load.customerOrder}</span></div>
+        <div class="detail-row"><span class="label">Customer</span><span class="value">${load.customer.name}</span></div>
+        <div class="detail-row"><span class="label">Deliver To</span><span class="value" style="max-width:60%;">${load.customer.address}</span></div>
         <div class="detail-row"><span class="label">Route</span><span class="value">${load.route}</span></div>
         <div class="detail-row"><span class="label">Product</span><span class="value">${load.product}</span></div>
         <div class="detail-row"><span class="label">Weight</span><span class="value">${load.weight.toFixed(1)} tonnes</span></div>
@@ -493,6 +513,39 @@ function doPrint() {
         display: flex;
         justify-content: space-between;
     }
+    /* Two-column layout for Deliver To + Load details */
+    .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+    /* Barcode section */
+    .barcodes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 4px;
+    }
+    .barcode-block {
+        border: 1px solid #E4E7E4;
+        border-radius: 6px;
+        padding: 10px 12px;
+        text-align: center;
+    }
+    .barcode-block .bc-label {
+        display: block;
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+        color: #6B7280;
+        margin-bottom: 6px;
+    }
+    .barcode-block svg {
+        display: block;
+        margin: 0 auto;
+        max-width: 100%;
+        height: auto;
+    }
     @media print {
         body { margin: 12mm; }
         .no-print { display: none !important; }
@@ -536,6 +589,15 @@ function doPrint() {
     </div>
 
     <div class="print-section">
+        <h4>Deliver To</h4>
+        <div class="kv">
+            <div class="k">Customer</div><div class="v">${esc(load.customer.name)}</div>
+            <div class="k">Address</div><div class="v">${esc(load.customer.address)}</div>
+            <div class="k">Customer Order</div><div class="v">${esc(load.customerOrder)}</div>
+        </div>
+    </div>
+
+    <div class="print-section">
         <h4>Driver</h4>
         <div class="kv">
             <div class="k">Driver Name</div><div class="v">${esc(state.driverName)}</div>
@@ -552,6 +614,20 @@ function doPrint() {
             <div class="k">Weight</div><div class="v">${load.weight.toFixed(1)} tonnes</div>
             <div class="k">Scheduled</div><div class="v">${esc(load.scheduled)}</div>
             <div class="k">Status</div><div class="v">${esc(load.status)}</div>
+        </div>
+    </div>
+
+    <div class="print-section">
+        <h4>Barcodes (Code 128)</h4>
+        <div class="barcodes">
+            <div class="barcode-block">
+                <span class="bc-label">Load Number</span>
+                <svg id="bcLoad"></svg>
+            </div>
+            <div class="barcode-block">
+                <span class="bc-label">Customer Order</span>
+                <svg id="bcOrder"></svg>
+            </div>
         </div>
     </div>
 
@@ -578,18 +654,57 @@ function doPrint() {
         <span>${esc(docketNo)}</span>
     </div>
 
+<!-- JsBarcode (Code128 renderer). Loaded from CDN. -->
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/script>
 <script>
-    // Auto-open the print dialog once the signature image has decoded.
+    // Auto-open the print dialog once the signature image + barcodes are ready.
     (function(){
         var img = document.querySelector('.sig-box img');
-        function go() {
-            try { window.focus(); window.print(); } catch(_) {}
+        var sigReady = false, bcReady = false;
+
+        function tryPrint() {
+            if (!sigReady || !bcReady) return;
+            setTimeout(function(){
+                try { window.focus(); window.print(); } catch(_) {}
+            }, 200);
         }
+
+        // Render barcodes when JsBarcode is available (poll briefly if the
+        // CDN script hasn't finished loading yet).
+        function renderBarcodes() {
+            if (typeof JsBarcode === 'undefined') {
+                setTimeout(renderBarcodes, 100);
+                return;
+            }
+            try {
+                JsBarcode('#bcLoad',  ${JSON.stringify(load.id)}, {
+                    format: 'CODE128',
+                    width: 2,
+                    height: 60,
+                    fontSize: 14,
+                    margin: 4,
+                    displayValue: true
+                });
+                JsBarcode('#bcOrder', ${JSON.stringify(load.customerOrder)}, {
+                    format: 'CODE128',
+                    width: 2,
+                    height: 60,
+                    fontSize: 14,
+                    margin: 4,
+                    displayValue: true
+                });
+            } catch (e) { /* fall through — still allow print */ }
+            bcReady = true;
+            tryPrint();
+        }
+        renderBarcodes();
+
         if (img && !img.complete) {
-            img.addEventListener('load', go);
-            img.addEventListener('error', go);
+            img.addEventListener('load',  function(){ sigReady = true; tryPrint(); });
+            img.addEventListener('error', function(){ sigReady = true; tryPrint(); });
         } else {
-            setTimeout(go, 150);
+            sigReady = true;
+            tryPrint();
         }
     })();
 <\/script>
