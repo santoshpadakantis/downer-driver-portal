@@ -46,54 +46,54 @@ const DRIVERS = {
 // Each load carries: product, customer, and a Customer Order (CO-#####) number.
 const LOADS_BY_DRIVER = {
     'DR-01': [
-        { id: 'USMF-1001', route: 'Sydney DC → Parramatta Site',      product: PROD.PMB,  weight: 28.5, scheduled: '2026-07-22 08:00', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88274' },
-        { id: 'USMF-1002', route: 'Sydney DC → Wollongong Site B',    product: PROD.AC20, weight: 24.0, scheduled: '2026-07-22 11:15', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88291' },
-        { id: 'USMF-1003', route: 'Sydney DC → Newcastle Yard',       product: PROD.AC10, weight: 26.0, scheduled: '2026-07-21 14:00', status: 'Completed', customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-88175' }
+        { id: 'USMF-1001', route: 'Sydney DC → Parramatta Site',      product: PROD.PMB,  weight: 28.5, scheduled: '2026-07-29 08:00', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88274' },
+        { id: 'USMF-1002', route: 'Sydney DC → Wollongong Site B',    product: PROD.AC20, weight: 24.0, scheduled: '2026-07-29 11:15', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88291' },
+        { id: 'USMF-1003', route: 'Sydney DC → Newcastle Yard',       product: PROD.AC10, weight: 26.0, scheduled: '2026-07-29 14:00', status: 'Completed', customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-88175' }
     ],
     'DR-02': [
-        { id: 'USMF-1010', route: 'Melbourne DC → Geelong Yard',      product: PROD.AC20, weight: 27.0, scheduled: '2026-07-22 07:30', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90112' },
-        { id: 'USMF-1011', route: 'Melbourne DC → Ballarat Depot',    product: PROD.PMB,  weight: 22.5, scheduled: '2026-07-22 13:00', status: 'Pending',   customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90118' },
-        { id: 'USMF-1012', route: 'Geelong Yard → Werribee Site',     product: PROD.AC10, weight: 25.0, scheduled: '2026-07-21 09:15', status: 'Completed', customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90007' }
+        { id: 'USMF-1010', route: 'Melbourne DC → Geelong Yard',      product: PROD.AC20, weight: 27.0, scheduled: '2026-07-29 07:30', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90112' },
+        { id: 'USMF-1011', route: 'Melbourne DC → Ballarat Depot',    product: PROD.PMB,  weight: 22.5, scheduled: '2026-07-29 13:00', status: 'Pending',   customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90118' },
+        { id: 'USMF-1012', route: 'Geelong Yard → Werribee Site',     product: PROD.AC10, weight: 25.0, scheduled: '2026-07-29 09:15', status: 'Completed', customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90007' }
     ],
     'DR-03': [
-        { id: 'USMF-1020', route: 'Brisbane North → Toowoomba Depot', product: PROD.PMB,  weight: 29.0, scheduled: '2026-07-22 06:45', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77455' },
-        { id: 'USMF-1021', route: 'Brisbane North → Ipswich Yard',    product: PROD.AC10, weight: 24.5, scheduled: '2026-07-22 12:00', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77462' },
-        { id: 'USMF-1022', route: 'Toowoomba → Warwick Site',         product: PROD.AC20, weight: 23.0, scheduled: '2026-07-23 08:00', status: 'Pending',   customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77501' }
+        { id: 'USMF-1020', route: 'Brisbane North → Toowoomba Depot', product: PROD.PMB,  weight: 29.0, scheduled: '2026-07-29 06:45', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77455' },
+        { id: 'USMF-1021', route: 'Brisbane North → Ipswich Yard',    product: PROD.AC10, weight: 24.5, scheduled: '2026-07-29 12:00', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77462' },
+        { id: 'USMF-1022', route: 'Toowoomba → Warwick Site',         product: PROD.AC20, weight: 23.0, scheduled: '2026-07-29 08:00', status: 'Pending',   customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77501' }
     ],
     'DR-04': [
-        { id: 'USMF-1030', route: 'Perth DC → Fremantle Yard',        product: PROD.AC20, weight: 28.0, scheduled: '2026-07-22 09:00', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-65128' },
-        { id: 'USMF-1031', route: 'Perth DC → Rockingham Site',       product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-22 15:30', status: 'Pending',   customer: CUSTOMERS.METRO,     customerOrder: 'CO-65134' },
-        { id: 'USMF-1032', route: 'Fremantle → Kwinana Yard',         product: PROD.AC10, weight: 26.5, scheduled: '2026-07-21 11:00', status: 'Completed', customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-65099' }
+        { id: 'USMF-1030', route: 'Perth DC → Fremantle Yard',        product: PROD.AC20, weight: 28.0, scheduled: '2026-07-29 09:00', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-65128' },
+        { id: 'USMF-1031', route: 'Perth DC → Rockingham Site',       product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-29 15:30', status: 'Pending',   customer: CUSTOMERS.METRO,     customerOrder: 'CO-65134' },
+        { id: 'USMF-1032', route: 'Fremantle → Kwinana Yard',         product: PROD.AC10, weight: 26.5, scheduled: '2026-07-29 11:00', status: 'Completed', customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-65099' }
     ],
     'DR-05': [
-        { id: 'USMF-1040', route: 'Adelaide DC → Mount Barker Site',  product: PROD.AC10, weight: 27.5, scheduled: '2026-07-22 08:15', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-71304' },
-        { id: 'USMF-1041', route: 'Adelaide DC → Port Adelaide Yard', product: PROD.PMB,  weight: 24.0, scheduled: '2026-07-22 13:45', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-71310' },
-        { id: 'USMF-1042', route: 'Mount Barker → Murray Bridge',     product: PROD.AC20, weight: 23.5, scheduled: '2026-07-23 07:30', status: 'Pending',   customer: CUSTOMERS.METRO,     customerOrder: 'CO-71322' }
+        { id: 'USMF-1040', route: 'Adelaide DC → Mount Barker Site',  product: PROD.AC10, weight: 27.5, scheduled: '2026-07-29 08:15', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-71304' },
+        { id: 'USMF-1041', route: 'Adelaide DC → Port Adelaide Yard', product: PROD.PMB,  weight: 24.0, scheduled: '2026-07-29 13:45', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-71310' },
+        { id: 'USMF-1042', route: 'Mount Barker → Murray Bridge',     product: PROD.AC20, weight: 23.5, scheduled: '2026-07-29 07:30', status: 'Pending',   customer: CUSTOMERS.METRO,     customerOrder: 'CO-71322' }
     ],
     'DR-06': [
-        { id: 'USMF-1050', route: 'Sydney DC → Bankstown Site',       product: PROD.PMB,  weight: 26.0, scheduled: '2026-07-22 06:00', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88301' },
-        { id: 'USMF-1051', route: 'Port Botany → Chullora Yard',      product: PROD.AC20, weight: 29.5, scheduled: '2026-07-22 10:30', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88318' },
-        { id: 'USMF-1052', route: 'Sydney DC → Liverpool Depot',      product: PROD.AC10, weight: 25.0, scheduled: '2026-07-20 15:00', status: 'Completed', customer: CUSTOMERS.METRO,     customerOrder: 'CO-88266' }
+        { id: 'USMF-1050', route: 'Sydney DC → Bankstown Site',       product: PROD.PMB,  weight: 26.0, scheduled: '2026-07-29 06:00', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88301' },
+        { id: 'USMF-1051', route: 'Port Botany → Chullora Yard',      product: PROD.AC20, weight: 29.5, scheduled: '2026-07-29 10:30', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88318' },
+        { id: 'USMF-1052', route: 'Sydney DC → Liverpool Depot',      product: PROD.AC10, weight: 25.0, scheduled: '2026-07-29 15:00', status: 'Completed', customer: CUSTOMERS.METRO,     customerOrder: 'CO-88266' }
     ],
     'DR-07': [
-        { id: 'USMF-1060', route: 'Newcastle → Maitland Depot',       product: PROD.AC10, weight: 28.5, scheduled: '2026-07-22 07:00', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88208' },
-        { id: 'USMF-1061', route: 'Newcastle → Charlestown Site',     product: PROD.PMB,  weight: 22.0, scheduled: '2026-07-22 12:15', status: 'Pending',   customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-88214' },
-        { id: 'USMF-1062', route: 'Newcastle → Cardiff Yard',         product: PROD.AC20, weight: 24.5, scheduled: '2026-07-21 08:45', status: 'Completed', customer: CUSTOMERS.METRO,     customerOrder: 'CO-88155' }
+        { id: 'USMF-1060', route: 'Newcastle → Maitland Depot',       product: PROD.AC10, weight: 28.5, scheduled: '2026-07-29 07:00', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88208' },
+        { id: 'USMF-1061', route: 'Newcastle → Charlestown Site',     product: PROD.PMB,  weight: 22.0, scheduled: '2026-07-29 12:15', status: 'Pending',   customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-88214' },
+        { id: 'USMF-1062', route: 'Newcastle → Cardiff Yard',         product: PROD.AC20, weight: 24.5, scheduled: '2026-07-29 08:45', status: 'Completed', customer: CUSTOMERS.METRO,     customerOrder: 'CO-88155' }
     ],
     'DR-08': [
-        { id: 'USMF-1070', route: 'Melbourne DC → Dandenong Yard',    product: PROD.AC20, weight: 30.0, scheduled: '2026-07-22 05:45', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90201' },
-        { id: 'USMF-1071', route: 'Melbourne DC → Frankston Site',    product: PROD.AC10, weight: 26.0, scheduled: '2026-07-22 11:00', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90214' },
-        { id: 'USMF-1072', route: 'Melbourne DC → Sunbury Depot',     product: PROD.PMB,  weight: 23.5, scheduled: '2026-07-23 09:15', status: 'Pending',   customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90223' }
+        { id: 'USMF-1070', route: 'Melbourne DC → Dandenong Yard',    product: PROD.AC20, weight: 30.0, scheduled: '2026-07-29 05:45', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90201' },
+        { id: 'USMF-1071', route: 'Melbourne DC → Frankston Site',    product: PROD.AC10, weight: 26.0, scheduled: '2026-07-29 11:00', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90214' },
+        { id: 'USMF-1072', route: 'Melbourne DC → Sunbury Depot',     product: PROD.PMB,  weight: 23.5, scheduled: '2026-07-29 09:15', status: 'Pending',   customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-90223' }
     ],
     'DR-09': [
-        { id: 'USMF-1080', route: 'Brisbane North → Gold Coast Yard', product: PROD.PMB,  weight: 27.0, scheduled: '2026-07-22 07:30', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77522' },
-        { id: 'USMF-1081', route: 'Brisbane North → Redcliffe Site',  product: PROD.AC10, weight: 24.0, scheduled: '2026-07-22 14:00', status: 'Pending',   customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77530' },
-        { id: 'USMF-1082', route: 'Gold Coast → Nerang Depot',        product: PROD.AC20, weight: 25.5, scheduled: '2026-07-20 10:30', status: 'Completed', customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77488' }
+        { id: 'USMF-1080', route: 'Brisbane North → Gold Coast Yard', product: PROD.PMB,  weight: 27.0, scheduled: '2026-07-29 07:30', status: 'Active',    customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77522' },
+        { id: 'USMF-1081', route: 'Brisbane North → Redcliffe Site',  product: PROD.AC10, weight: 24.0, scheduled: '2026-07-29 14:00', status: 'Pending',   customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77530' },
+        { id: 'USMF-1082', route: 'Gold Coast → Nerang Depot',        product: PROD.AC20, weight: 25.5, scheduled: '2026-07-29 10:30', status: 'Completed', customer: CUSTOMERS.REGIONAL,  customerOrder: 'CO-77488' }
     ],
     'DR-10': [
-        { id: 'USMF-1090', route: 'Sydney DC → Ryde Site',            product: PROD.AC20, weight: 28.0, scheduled: '2026-07-22 06:30', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88355' },
-        { id: 'USMF-1091', route: 'Sydney DC → Hornsby Depot',        product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-22 12:45', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-88367' },
-        { id: 'USMF-1092', route: 'Sydney DC → Manly Site',           product: PROD.AC10, weight: 22.5, scheduled: '2026-07-23 08:30', status: 'Pending',   customer: CUSTOMERS.METRO,     customerOrder: 'CO-88401' }
+        { id: 'USMF-1090', route: 'Sydney DC → Ryde Site',            product: PROD.AC20, weight: 28.0, scheduled: '2026-07-29 06:30', status: 'Active',    customer: CUSTOMERS.METRO,     customerOrder: 'CO-88355' },
+        { id: 'USMF-1091', route: 'Sydney DC → Hornsby Depot',        product: PROD.PMB,  weight: 25.5, scheduled: '2026-07-29 12:45', status: 'Active',    customer: CUSTOMERS.QUICKSEAL, customerOrder: 'CO-88367' },
+        { id: 'USMF-1092', route: 'Sydney DC → Manly Site',           product: PROD.AC10, weight: 22.5, scheduled: '2026-07-29 08:30', status: 'Pending',   customer: CUSTOMERS.METRO,     customerOrder: 'CO-88401' }
     ]
 };
 
