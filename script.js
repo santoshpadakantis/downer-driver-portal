@@ -102,14 +102,56 @@ function getLoadsForDriver(driverId) {
 }
 
 function findLoad(driverId, loadId) {
+    if (state.returnLoad && loadId === state.returnLoad.id) {
+        return state.returnLoad;
+    }
     return getLoadsForDriver(driverId).find(l => l.id === loadId);
+}
+
+// ---------- Return Pick Up ----------
+// Fixed numbers per demo requirement:
+//   Load Number         = 00031
+//   Return Order Number = 00031
+const RETURN_LOAD_ID     = '00031';
+const RETURN_ORDER_NO    = '00031';
+
+function makeReturnLoadForDriver(driverId) {
+    // Use the driver's primary customer (from their first active load) so the
+    // pickup location and customer contact make sense per driver.
+    const loads   = getLoadsForDriver(driverId);
+    const primary = loads.find(l => l.status === 'Active') || loads[0];
+    const customer = primary ? primary.customer : CUSTOMERS.METRO;
+    // Reverse-ish route: from customer site back to origin depot
+    let route = 'Customer Site \u2192 Depot';
+    if (primary && typeof primary.route === 'string' && primary.route.includes(' \u2192 ')) {
+        const parts = primary.route.split(' \u2192 ');
+        route = parts[1] + ' \u2192 ' + parts[0];
+    }
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const scheduled =
+        now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) +
+        ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+
+    return {
+        id:            RETURN_LOAD_ID,
+        route:         route,
+        product:       'Returned mix (mixed grade)',
+        weight:        8.5,
+        scheduled:     scheduled,
+        status:        'Return Pickup',
+        customer:      customer,
+        customerOrder: RETURN_ORDER_NO,
+        isReturn:      true
+    };
 }
 
 // ---------- State ----------
 const state = {
     driverId: '',
     driverName: '',
-    selectedLoadId: null
+    selectedLoadId: null,
+    returnLoad: null   // holds synthetic pickup load when in Return Pick Up mode
 };
 
 // ---------- Utilities ----------
@@ -247,6 +289,7 @@ function initLoadsScreen() {
         state.driverId = '';
         state.driverName = '';
         state.selectedLoadId = null;
+        state.returnLoad = null;
         $('#driverId').value = '';
         $('#headerRight').textContent = '';
         goToScreen(1);
@@ -254,6 +297,8 @@ function initLoadsScreen() {
 
     $('#proceedBtn').addEventListener('click', () => {
         if (!state.selectedLoadId) return;
+        // Regular delivery load: clear any Return context
+        state.returnLoad = null;
         renderAckDetails();
         // Reset the checkbox each time we enter Screen 3
         $('#agreeChk').checked = false;
@@ -264,6 +309,22 @@ function initLoadsScreen() {
         resetSignature();
         updatePrintButton();
     });
+
+    // Return Pick Up card — bypasses the loads table
+    const rBtn = $('#returnSelectBtn');
+    if (rBtn) {
+        rBtn.addEventListener('click', () => {
+            if (!state.driverId) return;
+            state.returnLoad = makeReturnLoadForDriver(state.driverId);
+            state.selectedLoadId = state.returnLoad.id;
+            renderAckDetails();
+            $('#agreeChk').checked = false;
+            goToScreen(3);
+            resizeSignaturePad();
+            resetSignature();
+            updatePrintButton();
+        });
+    }
 }
 
 // ============================================================
@@ -273,12 +334,18 @@ function renderAckDetails() {
     const load = findLoad(state.driverId, state.selectedLoadId);
     if (!load) return;
 
+    const orderLabel = load.isReturn ? 'Return Order' : 'Customer Order';
+    const flowLabel  = load.isReturn ? 'Pickup From'  : 'Deliver To';
+    const headerTag  = load.isReturn
+        ? '<span class="badge badge-pending" style="margin-left:8px;">Return Pickup</span>'
+        : '';
+
     const html = `
-        <h3>Load Details</h3>
+        <h3>Load Details ${headerTag}</h3>
         <div class="detail-row"><span class="label">Load ID</span><span class="value">${load.id}</span></div>
-        <div class="detail-row"><span class="label">Customer Order</span><span class="value">${load.customerOrder}</span></div>
+        <div class="detail-row"><span class="label">${orderLabel}</span><span class="value">${load.customerOrder}</span></div>
         <div class="detail-row"><span class="label">Customer</span><span class="value">${load.customer.name}</span></div>
-        <div class="detail-row"><span class="label">Deliver To</span><span class="value" style="max-width:60%;">${load.customer.address}</span></div>
+        <div class="detail-row"><span class="label">${flowLabel}</span><span class="value" style="max-width:60%;">${load.customer.address}</span></div>
         <div class="detail-row"><span class="label">Route</span><span class="value">${load.route}</span></div>
         <div class="detail-row"><span class="label">Product</span><span class="value">${load.product}</span></div>
         <div class="detail-row"><span class="label">Weight</span><span class="value">${load.weight.toFixed(1)} tonnes</span></div>
@@ -426,6 +493,13 @@ function doPrint() {
     const esc = (s) => String(s).replace(/[&<>"']/g, c => ({
         '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
     }[c]));
+
+    // Labels change for a Return Pickup vs a normal delivery
+    const isReturn        = !!load.isReturn;
+    const docketTitle     = isReturn ? 'Return Pickup Docket' : 'Dispatch Docket';
+    const flowSectionH4   = isReturn ? 'Pickup From'          : 'Deliver To';
+    const orderRowLabel   = isReturn ? 'Return Order'         : 'Customer Order';
+    const barcodeOrderLbl = isReturn ? 'Return Order Number'  : 'Customer Order';
 
     // Absolute URL for the logo so the popup window (with no base URL) can find it.
     const logoUrl = new URL('downer-logo.png', location.href).href;
@@ -594,18 +668,18 @@ function doPrint() {
             </span>
         </div>
         <div class="docket-no">
-            <h2>Dispatch Docket</h2>
+            <h2>${esc(docketTitle)}</h2>
             <div class="muted">Docket #: ${esc(docketNo)}</div>
             <div class="muted">Issued: ${esc(signedAt)}</div>
         </div>
     </div>
 
     <div class="print-section">
-        <h4>Deliver To</h4>
+        <h4>${esc(flowSectionH4)}</h4>
         <div class="kv">
             <div class="k">Customer</div><div class="v">${esc(load.customer.name)}</div>
             <div class="k">Address</div><div class="v">${esc(load.customer.address)}</div>
-            <div class="k">Customer Order</div><div class="v">${esc(load.customerOrder)}</div>
+            <div class="k">${esc(orderRowLabel)}</div><div class="v">${esc(load.customerOrder)}</div>
         </div>
     </div>
 
@@ -637,7 +711,7 @@ function doPrint() {
                 <svg id="bcLoad"></svg>
             </div>
             <div class="barcode-block">
-                <span class="bc-label">Customer Order</span>
+                <span class="bc-label">${esc(barcodeOrderLbl)}</span>
                 <svg id="bcOrder"></svg>
             </div>
         </div>

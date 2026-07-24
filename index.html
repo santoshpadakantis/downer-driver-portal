@@ -7,14 +7,14 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Downer Australia — Driver Self Service Portal</title>
-    <link rel="stylesheet" href="styles.css?v=20260722e" />
+    <link rel="stylesheet" href="styles.css?v=20260724a" />
 </head>
 <body>
     <!-- Top Header (shared) -->
     <header class="app-header">
         <div class="header-inner">
             <div class="brand">
-                <img src="downer-logo.png?v=20260722e" alt="Downer Australia" class="brand-logo" onerror="this.style.display='none';document.getElementById('brand-fallback').style.display='inline-flex';" />
+                <img src="downer-logo.png?v=20260724a" alt="Downer Australia" class="brand-logo" onerror="this.style.display='none';document.getElementById('brand-fallback').style.display='inline-flex';" />
                 <span id="brand-fallback" class="brand-fallback" style="display:none;">
                     <span class="brand-mark">D</span>
                     <span class="brand-text">Downer</span>
@@ -74,6 +74,21 @@
                         <p class="muted">Loads assigned in D365 F&amp;O for driver: <strong id="driverBadge">—</strong></p>
                     </div>
                     <button class="btn btn-ghost" id="backToLogin">&larr; Sign out</button>
+                </div>
+
+                <!-- Return Pick Up quick action -->
+                <div class="return-card" id="returnCard">
+                    <div class="return-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 14 4 9 9 4"></polyline>
+                            <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+                        </svg>
+                    </div>
+                    <div class="return-body">
+                        <div class="return-title">Return Pick Up</div>
+                        <div class="return-sub">Collect returned mix from customer site</div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-select" id="returnSelectBtn">Select</button>
                 </div>
 
                 <div class="table-wrap">
@@ -211,6 +226,6 @@
         </div>
     </section>
 
-    <script src="script.js?v=20260722e"></script>
+    <script src="script.js?v=20260724a"></script>
 </body>
 </html>

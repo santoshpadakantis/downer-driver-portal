@@ -300,6 +300,47 @@ html, body {
     border-radius: 10px;
 }
 
+/* -------------------- Return Pick Up card -------------------- */
+.return-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    border: 1px solid var(--downer-border);
+    border-radius: 12px;
+    background: #F7FBFD;
+}
+.return-card .return-icon {
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: #E7F7FC;
+    color: var(--downer-cyan-dk, #009EC4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.return-card .return-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.return-card .return-title {
+    font-weight: 700;
+    color: var(--downer-ink, #1D1D1B);
+    font-size: 15px;
+    line-height: 1.2;
+}
+.return-card .return-sub {
+    color: var(--downer-muted, #6B7280);
+    font-size: 13px;
+    margin-top: 2px;
+}
+.return-card .btn-select {
+    padding: 8px 22px;
+}
+
 .loads-table {
     width: 100%;
     border-collapse: collapse;
